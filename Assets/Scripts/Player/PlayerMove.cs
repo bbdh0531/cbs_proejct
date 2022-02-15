@@ -11,9 +11,10 @@ public class PlayerMove : MonoBehaviour
     public Transform player_cam;
 
     Transform tr;
-
+    //Move
     Vector3 dir_pos;
-    Vector3 dir_rot;
+    //rotation
+    Vector3 player_rot;
     Vector3 camera_rot;
 
     float t_x, t_y;
@@ -51,11 +52,11 @@ public class PlayerMove : MonoBehaviour
 
         t_x = Mathf.Clamp(t_x, -80.0f, 80.0f);
 
-        camera_rot.Set(-t_x, t_y, 0);
-        dir_rot.Set(0, t_y, 0);
+        camera_rot.Set(-t_x, 0 , 0);
+        player_rot.Set(0, t_y, 0);
 
         player_cam.localEulerAngles = camera_rot;
-        tr.localEulerAngles = dir_rot;
+        tr.localEulerAngles = player_rot;
 
         //player_cam.eulerAngles = dir_rot;
     }
