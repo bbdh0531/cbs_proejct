@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerMove : MonoBehaviour
 {
 
     public float move_speed;
@@ -14,8 +14,8 @@ public class Player : MonoBehaviour
 
     Vector3 dir_pos;
     Vector3 dir_rot;
+    Vector3 camera_rot;
 
-    float m_x, m_z;
     float t_x, t_y;
 
     // Start is called before the first frame update
@@ -25,28 +25,23 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void FixedUpdate()
     {
-        PlayerMove();
-        PlayerTurn();
+        Move();
+        Turn();
     }
 
-    void PlayerMove()
+    void Move()
     {
-        m_x = Input.GetAxisRaw("Horizontal");
-        m_z = Input.GetAxisRaw("Vertical");
+        float m_x = Input.GetAxisRaw("Horizontal");
+        float m_z = Input.GetAxisRaw("Vertical");
 
         dir_pos.Set(m_x, 0, m_z);
 
         tr.Translate(dir_pos * move_speed * Time.deltaTime);
     }
 
-    void PlayerTurn()
+    void Turn()
     {
         float _t_x = Input.GetAxisRaw("Mouse Y");
         float _t_y = Input.GetAxisRaw("Mouse X");
@@ -56,10 +51,13 @@ public class Player : MonoBehaviour
 
         t_x = Mathf.Clamp(t_x, -80.0f, 80.0f);
 
-        dir_rot.Set(-t_x, t_y, 0);
+        camera_rot.Set(-t_x, t_y, 0);
+        dir_rot.Set(0, t_y, 0);
 
-        tr.eulerAngles = dir_rot;
-       // player_cam.eulerAngles = dir_rot;
+        player_cam.localEulerAngles = camera_rot;
+        tr.localEulerAngles = dir_rot;
+
+        //player_cam.eulerAngles = dir_rot;
     }
 
 }
