@@ -28,6 +28,7 @@ public class GunController : MonoBehaviour
     {
         audio_source = GetComponent<AudioSource>();
         cur_fire_pos = fire_pos.position;
+        cur_ammo = max_ammo;
     }
 
     // Update is called once per frame
@@ -74,7 +75,7 @@ public class GunController : MonoBehaviour
         yield return null;
     }
 
-    //¹Ýµ¿±¸Çö
+    //ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½
     IEnumerator ShotEffect()
     {
         float cur_recolie_x = Random.Range(min_x_recolie_value, max_recoile_x_value);

@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
     {
         tr = GetComponent<Transform>();
     }
-
+    
     private void Update()
     {
         tr.Translate(dir_rot * bullet_speed * Time.deltaTime);
