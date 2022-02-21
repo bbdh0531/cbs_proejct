@@ -47,16 +47,18 @@ public class PoolingManager : MonoBehaviour
             if(_kim == null)
                 return null;
             _kim.transform.SetParent(on);
+            _kim.gameObject.SetActive(true);
             off_list.Remove(_pooling_obj);
             on_list.Add(_pooling_obj);
             return _kim;
         }
         else
         {
-            GameObject _kim = off_list.Find(o=>o==_pooling_obj);
+            GameObject _kim = on_list.Find(o=>o==_pooling_obj);
             if(_kim == null)
                 return null;
             _kim.transform.SetParent(off);
+            _kim.gameObject.SetActive(false);
             on_list.Remove(_pooling_obj);
             off_list.Add(_pooling_obj);
             return _kim;
@@ -78,21 +80,21 @@ public class PoolingManager : MonoBehaviour
         {
             GameObject _bullet = on_list.Find(o=>o==gameObject.activeSelf);
             _bullet.transform.SetParent(off);
-            _bullet.gameObject.SetActive(true);
+            _bullet.gameObject.SetActive(false);
             off_list.Add(_bullet);
             on_list.Remove(_bullet);
             return _bullet;
         }
     }
 
-    public void SetPoolingOn()
+    public GameObject SetPoolingOn()
     {
-        PoolingActive(true);
+        return PoolingActive(true);
     }
 
-    public void SetPoolingOff()
+    public GameObject SetPoolingOff()
     {
-        PoolingActive(false);
+        return PoolingActive(false);
     }
 
     public GameObject SetPoolingOff(GameObject _bullet)
@@ -102,15 +104,10 @@ public class PoolingManager : MonoBehaviour
 
     public GameObject SetPoolingOn(GameObject _bullet)
     {
-        return PoolingActive(_bullet, false);
+        return PoolingActive(_bullet, true);
     }
 
     // Start is called before the first frame update
-    void Start()
-    {
-            
-    }
-
     void Awake()
     {
         if(instance == null)

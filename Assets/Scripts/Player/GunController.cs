@@ -23,6 +23,11 @@ public class GunController : MonoBehaviour
     public int cur_ammo;
     public int max_ammo;
 
+    private Gun cur_gun;
+
+    public Gun[] weapones;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,14 +40,21 @@ public class GunController : MonoBehaviour
     void Update()
     {
         Fire();
+        Reload();
     }
 
     void Fire()
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)&&isRelaod)
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
             Shooting();
         else
             StartCoroutine(GunIdle());
+    }
+
+    void Reload()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && !isRelaod)
+            StartCoroutine(Reloading());
     }
 
     void Shooting()
@@ -51,20 +63,19 @@ public class GunController : MonoBehaviour
         {
             if (cur_ammo > 0)
                 StartCoroutine(Shot());
-            else if (Input.GetKeyDown(KeyCode.R) && !isRelaod)
-                StartCoroutine(Reload());
         }
     }
 
     IEnumerator Shot()
     {
-        GameObject _bullet = Instantiate(_bullet_prefabs);
+        GameObject _bullet = PoolingManager.instance.SetPoolingOn();
         Bullet _tmp = _bullet.GetComponent<Bullet>();
         _tmp.dir_rot = fire_pos.forward;
         _tmp.transform.position = fire_pos.position;
-        StopAllCoroutines();
-        StartCoroutine(ShotEffect());
+        cur_ammo--;
         PlaySE();
+        StopAllCoroutines();
+        StartCoroutine(Recoil());
         yield return new WaitForSeconds(1.0f);
     }
 
@@ -76,7 +87,7 @@ public class GunController : MonoBehaviour
     }
 
     //�ݵ�����
-    IEnumerator ShotEffect()
+    IEnumerator Recoil()
     {
         float cur_recolie_x = Random.Range(min_x_recolie_value, max_recoile_x_value);
         float cur_recolie_y = Random.Range(min_y_recolie_value, max_recoile_y_value);
@@ -84,15 +95,14 @@ public class GunController : MonoBehaviour
         fire_pos.position += Vector3.Lerp(fire_pos.position, recolie_pos, 0.4f);
         Debug.Log("fire_pos position"+ fire_pos.position);
         Debug.Log("recolie_value_x: "+cur_recolie_x+ "recolie_value_y: " + cur_recolie_y);
-        PlaySE();
         yield return new WaitForSeconds(1.0f);
     }
 
-    IEnumerator Reload()
+    IEnumerator Reloading()
     {
         isRelaod = true;
         cur_ammo = max_ammo;
-        StopAllCoroutines();
+        PlaySE();
         yield return new WaitForSeconds(1.0f);
         isRelaod = false;
     }
@@ -106,5 +116,13 @@ public class GunController : MonoBehaviour
         }
         else
             Debug.Log("audio clip is null");
+    }
+
+    void SetWeapone(Gun _gun)
+    {
+        if (_gun != null)
+            cur_gun = _gun;
+        else
+            Debug.Log("Not wepone");
     }
 }

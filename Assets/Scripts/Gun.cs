@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float min_x_recolie_value;
+    public float min_y_recolie_value;
+    public float max_recoile_x_value;
+    public float max_recoile_y_value;
+    public float reaload_time;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public int max_armmo;
+    public int gun_price;
+
+    public AudioClip shoting_sound;
+    public AudioClip Reaload_clip;
+
+    
 }
