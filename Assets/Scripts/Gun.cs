@@ -10,11 +10,11 @@ public class Gun : MonoBehaviour
     public float max_recoile_y_value;
     public float reaload_time;
 
+    public int cur_armmo;
     public int max_armmo;
     public int gun_price;
 
     public AudioClip shoting_sound;
     public AudioClip Reaload_clip;
 
-    
 }

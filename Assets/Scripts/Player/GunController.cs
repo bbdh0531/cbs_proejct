@@ -11,17 +11,9 @@ public class GunController : MonoBehaviour
     Vector3 recolie_pos;
     Vector3 cur_fire_pos;
     
-    bool isRelaod = false;
+    [SerializeField]bool isRelaod = false;
 
     AudioSource audio_source;
-
-    public float min_x_recolie_value;
-    public float min_y_recolie_value;
-    public float max_recoile_x_value;
-    public float max_recoile_y_value;
-
-    public int cur_ammo;
-    public int max_ammo;
 
     private Gun cur_gun;
 
@@ -33,7 +25,7 @@ public class GunController : MonoBehaviour
     {
         audio_source = GetComponent<AudioSource>();
         cur_fire_pos = fire_pos.position;
-        cur_ammo = max_ammo;
+        ArmmorCount();
     }
 
     // Update is called once per frame
@@ -41,6 +33,7 @@ public class GunController : MonoBehaviour
     {
         Fire();
         Reload();
+        WeaponeChange();
     }
 
     void Fire()
@@ -57,11 +50,19 @@ public class GunController : MonoBehaviour
             StartCoroutine(Reloading());
     }
 
+    void WeaponeChange()
+    {
+        if(Input.GetKeyDown(KeyCode.Alpha1))//주무기
+            SetWeapone(weapones[0]);
+        if (Input.GetKeyDown(KeyCode.Alpha1))//보조 무기
+            SetWeapone(weapones[1]);
+    }
+
     void Shooting()
     {
         if (!isRelaod)
         {
-            if (cur_ammo > 0)
+            if (cur_gun.cur_armmo > 0)
                 StartCoroutine(Shot());
         }
     }
@@ -70,9 +71,10 @@ public class GunController : MonoBehaviour
     {
         GameObject _bullet = PoolingManager.instance.SetPoolingOn();
         Bullet _tmp = _bullet.GetComponent<Bullet>();
-        _tmp.dir_rot = fire_pos.forward;
         _tmp.transform.position = fire_pos.position;
-        cur_ammo--;
+        _tmp.transform.rotation = fire_pos.rotation;
+        cur_gun.cur_armmo--;
+        ArmmorCount();
         PlaySE();
         StopAllCoroutines();
         StartCoroutine(Recoil());
@@ -89,8 +91,8 @@ public class GunController : MonoBehaviour
     //�ݵ�����
     IEnumerator Recoil()
     {
-        float cur_recolie_x = Random.Range(min_x_recolie_value, max_recoile_x_value);
-        float cur_recolie_y = Random.Range(min_y_recolie_value, max_recoile_y_value);
+        float cur_recolie_x = Random.Range(cur_gun.min_x_recolie_value, cur_gun.max_recoile_x_value);
+        float cur_recolie_y = Random.Range(cur_gun.min_y_recolie_value, cur_gun.max_recoile_y_value);
         recolie_pos.Set(cur_recolie_x, cur_recolie_y, 0.0f);
         fire_pos.position += Vector3.Lerp(fire_pos.position, recolie_pos, 0.4f);
         Debug.Log("fire_pos position"+ fire_pos.position);
@@ -100,10 +102,11 @@ public class GunController : MonoBehaviour
 
     IEnumerator Reloading()
     {
-        isRelaod = true;
-        cur_ammo = max_ammo;
         PlaySE();
+        isRelaod = true;
         yield return new WaitForSeconds(1.0f);
+        cur_gun.cur_armmo = cur_gun.max_armmo;
+        ArmmorCount();
         isRelaod = false;
     }
 
@@ -121,8 +124,18 @@ public class GunController : MonoBehaviour
     void SetWeapone(Gun _gun)
     {
         if (_gun != null)
+        {
             cur_gun = _gun;
+            ArmmorCount();
+        }
         else
             Debug.Log("Not wepone");
     }
+
+    void ArmmorCount()
+    {
+        UIManager.instance.armmor.text = 
+            cur_gun.cur_armmo.ToString() + "/" + cur_gun.max_armmo.ToString();
+    }
+    
 }
