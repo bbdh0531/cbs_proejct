@@ -19,6 +19,26 @@ public class PlayerMove : MonoBehaviour
 
     float t_x, t_y;
 
+    bool isCrouch = false;
+
+    public Vector3 get_dir_pos
+    {
+        get
+        {
+            return dir_pos;
+        }
+    }
+
+    public bool get_isCrouch
+    {
+        get
+        {
+            return isCrouch;
+        }
+    }
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,6 +79,14 @@ public class PlayerMove : MonoBehaviour
         tr.localEulerAngles = player_rot;
 
         //player_cam.eulerAngles = dir_rot;
+    }
+
+    void Crouch()
+    {
+        if(Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            isCrouch = !isCrouch;
+        }
     }
 
 }
